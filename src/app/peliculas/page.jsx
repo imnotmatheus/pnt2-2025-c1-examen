@@ -2,18 +2,23 @@
 
 import { useState, useEffect } from 'react';
 import MovieList from './MovieList';
+import Cabecera from './Cabecera';
+import PieDePagina from './PieDePagina';
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
+  const urlAPI = 'https://mflixbackend.azurewebsites.net/api/movies'
+
   useEffect(() => {
     async function fetchMovies() {
       try {
-        const response = await fetch(`https://mflixbackend.azurewebsites.net/api/movies?pageSize=10&page=${page}`);
+        setLoading(true)
+        const response = await fetch(`${urlAPI}?pageSize=20&page=${page}`);
         const data = await response.json();
-        setMovies(data);
+        setMovies(data)        
         setLoading(false);
       } catch (error) {
         console.error('Error fetching movies:', error);
@@ -21,11 +26,13 @@ export default function Home() {
       }
     }
 
-    fetchMovies();
+    fetchMovies()
+
   }, [page]);
 
   return (
-    <main className="container mx-auto p-4">      
+    <main className="container mx-auto p-4">   
+    <Cabecera/>
       {loading ? (
         <p>Cargando películas...</p>
       ) : (
@@ -47,8 +54,10 @@ export default function Home() {
               Siguiente →
             </button>
           </div>
+          <br/>
         </>
       )}
+      <PieDePagina/>
     </main>
   );
 }
